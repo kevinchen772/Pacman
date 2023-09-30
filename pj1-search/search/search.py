@@ -19,6 +19,7 @@ Pacman agents (in searchAgents.py).
 
 import util
 
+
 class SearchProblem:
     """
     This class outlines the structure of a search problem, but doesn't implement
@@ -88,7 +89,47 @@ def depthFirstSearch(problem):
     """
     "*** YOUR CODE HERE ***"
 
-    util.raiseNotDefined()
+
+    # 用它来存 ((position), [path])
+    positionAndPath = util.Stack()
+    # 存访问过的
+    visited = set()
+
+    # 如果是目标，直接返回空list
+    if problem.isGoalState(problem.getStartState()):
+        return []
+
+    # 把开始state入栈
+    positionAndPath.push((problem.getStartState(), []))
+
+    # 重复到栈为空
+    while not positionAndPath.isEmpty():
+        # 拿到栈顶元素
+        position, path = positionAndPath.pop()
+
+        # 如果访问过
+        if position in visited:
+            continue
+        # 没访问过，入栈
+        visited.add(position)
+
+        # 如果是目标，直接返回路径
+        if problem.isGoalState(position):
+            return path
+
+        # 拿到可能的下个动作
+        successors = problem.getSuccessors(position)
+
+        for nextState, action, _ in successors:
+
+            # 如果没访问过，就计算path后入栈
+            if nextState not in visited:
+                new_path = path + [action]
+                positionAndPath.push((nextState, new_path))
+
+    #没找到， 返回空list
+    return []
+
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
