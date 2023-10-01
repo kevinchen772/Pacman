@@ -91,27 +91,27 @@ def depthFirstSearch(problem):
 
 
     # 用它来存 ((position), [path])
-    positionAndPath = util.Stack()
+    frontier = util.Stack()
     # 存访问过的
-    visited = set()
+    explored = set()
 
     # 如果是目标，直接返回空list
     if problem.isGoalState(problem.getStartState()):
         return []
 
     # 把开始state入栈
-    positionAndPath.push((problem.getStartState(), []))
+    frontier.push((problem.getStartState(), []))
 
     # 重复到栈为空
-    while not positionAndPath.isEmpty():
+    while not frontier.isEmpty():
         # 拿到栈顶元素
-        position, path = positionAndPath.pop()
+        position, path = frontier.pop()
 
         # 如果访问过
-        if position in visited:
+        if position in explored:
             continue
         # 没访问过，入栈
-        visited.add(position)
+        explored.add(position)
 
         # 如果是目标，直接返回路径
         if problem.isGoalState(position):
@@ -123,18 +123,51 @@ def depthFirstSearch(problem):
         for nextState, action, _ in successors:
 
             # 如果没访问过，就计算path后入栈
-            if nextState not in visited:
+            if nextState not in explored:
                 new_path = path + [action]
-                positionAndPath.push((nextState, new_path))
+                frontier.push((nextState, new_path))
 
-    #没找到， 返回空list
+    # 没找到， 返回空list
     return []
 
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    # 用它来存 ((position), [path])
+    frontier = util.Queue()
+    # 存访问过的
+    explored = set()
+
+    # 如果是目标，直接返回空list
+    if problem.isGoalState(problem.getStartState()):
+        return []
+    # 把开始state入队
+    frontier.push((problem.getStartState(), []))
+
+    # 重复到队列为空
+    while not frontier.isEmpty():
+
+        # 拿到队列头的元素
+        position, path = frontier.pop()
+        # 加入到已经访问过的
+        explored.add(position)
+
+        # 如果找到目标，返回路径
+        if problem.isGoalState(position):
+            return path
+
+        # 没找到目标，拿到可能的下一步
+        successors = problem.getSuccessors(position)
+
+        for nextState, action, _ in successors:
+            # 没访问过
+            if nextState not in explored:
+                new_path = path + [action]
+                frontier.push((nextState, new_path))
+
+    # 没找到，返回空list
+    return []
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
