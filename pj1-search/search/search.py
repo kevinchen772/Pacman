@@ -207,7 +207,31 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    frontier = util.PriorityQueue()
+    start = problem.getStartState()
+    frontier.push((start, []), heuristic(start, problem))
+    explored = set()
+    # 一直执行到frontier为空
+    while not frontier.isEmpty():
+        # 拿到目前最优
+        curr_state, curr_path = frontier.pop()
+
+        # 如果已经找到goal，直接返回
+        if problem.isGoalState(curr_state):
+            return curr_path
+
+        # 把当前state标记为已经访问
+        explored.add(curr_state)
+
+        # 找到可以访问的邻居
+        for nextState, action, cost in problem.getSuccessors(curr_state):
+            if nextState not in explored:
+                new_path = curr_path + [action]
+                new_cost = problem.getCostOfActions(new_path) + heuristic(nextState, problem)
+                frontier.update((nextState, new_path), new_cost)
+
+    # 没法到达
+    return []
 
 
 # Abbreviations
