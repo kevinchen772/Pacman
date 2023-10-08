@@ -139,6 +139,7 @@ def breadthFirstSearch(problem):
     # 存访问过的
     explored = []
 
+
     # 如果是目标，直接返回空list
     if problem.isGoalState(problem.getStartState()):
         return []

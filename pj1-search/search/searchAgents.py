@@ -563,6 +563,7 @@ class AnyFoodSearchProblem(PositionSearchProblem):
     method.
     """
 
+
     def __init__(self, gameState):
         "Stores information from the gameState.  You don't need to change this."
         # Store the food for later reference
