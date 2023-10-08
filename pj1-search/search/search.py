@@ -93,7 +93,7 @@ def depthFirstSearch(problem):
     # 用它来存 ((position), [path])
     frontier = util.Stack()
     # 存访问过的
-    explored = set()
+    explored = []
 
     # 如果是目标，直接返回空list
     if problem.isGoalState(problem.getStartState()):
@@ -111,7 +111,7 @@ def depthFirstSearch(problem):
         if position in explored:
             continue
         # 没访问过，入栈
-        explored.add(position)
+        explored.append(position)
 
         # 如果是目标，直接返回路径
         if problem.isGoalState(position):
@@ -137,7 +137,7 @@ def breadthFirstSearch(problem):
     # 用它来存 ((position), [path])
     frontier = util.Queue()
     # 存访问过的
-    explored = set()
+    explored = []
 
     # 如果是目标，直接返回空list
     if problem.isGoalState(problem.getStartState()):
@@ -151,7 +151,7 @@ def breadthFirstSearch(problem):
         # 拿到队列头的元素
         position, path = frontier.pop()
         # 加入到已经访问过的
-        explored.add(position)
+        explored.append(position)
 
         # 如果找到目标，返回路径
         if problem.isGoalState(position):
@@ -163,18 +163,20 @@ def breadthFirstSearch(problem):
         for nextState, action, _ in successors:
             # 没访问过
             if nextState not in explored:
+                explored.append(nextState)
                 new_path = path + [action]
                 frontier.push((nextState, new_path))
 
     # 没找到，返回空list
     return []
 
+
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
     frontier = util.PriorityQueue()
     frontier.push((problem.getStartState(), []), 0)
-    explored = set()
+    explored = []
     # 一直执行到frontier为空
     while not frontier.isEmpty():
         # 拿到目前最优
@@ -185,11 +187,12 @@ def uniformCostSearch(problem):
             return curr_path
 
         # 把当前state标记为已经访问
-        explored.add(curr_state)
+        explored.append(curr_state)
 
         # 找到可以访问的邻居
         for nextState, action, cost in problem.getSuccessors(curr_state):
             if nextState not in explored:
+                explored.append(nextState)
                 new_path = curr_path + [action]
                 new_cost = problem.getCostOfActions(new_path)
                 frontier.update((nextState, new_path), new_cost)
@@ -210,7 +213,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     frontier = util.PriorityQueue()
     start = problem.getStartState()
     frontier.push((start, []), heuristic(start, problem))
-    explored = set()
+    explored = []
     # 一直执行到frontier为空
     while not frontier.isEmpty():
         # 拿到目前最优
@@ -221,11 +224,12 @@ def aStarSearch(problem, heuristic=nullHeuristic):
             return curr_path
 
         # 把当前state标记为已经访问
-        explored.add(curr_state)
+        explored.append(curr_state)
 
         # 找到可以访问的邻居
         for nextState, action, cost in problem.getSuccessors(curr_state):
             if nextState not in explored:
+                explored.append(nextState)
                 new_path = curr_path + [action]
                 new_cost = problem.getCostOfActions(new_path) + heuristic(nextState, problem)
                 frontier.update((nextState, new_path), new_cost)

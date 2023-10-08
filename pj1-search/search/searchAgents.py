@@ -288,6 +288,7 @@ class CornersProblem(search.SearchProblem):
         # Please add any code here which you would like to use
         # in initializing the problem
         "*** YOUR CODE HERE ***"
+        self.startingGameState = startingGameState
 
     def getStartState(self):
         """
@@ -295,14 +296,26 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        return self.startingPosition, []
 
     def isGoalState(self, state):
         """
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        # 拿到xy的位置
+        coordinates = state[0]
+        # 拿到访问过的角落位置list
+        visited = state[1]
+        # 如果当前位置是角落
+        if coordinates in self.corners:
+            # 检查
+            if coordinates not in visited:
+                # 把它加入到访问过的角落位置
+                visited.append(coordinates)
+            # 如果4个全部访问过，就是goalstate
+            return len(visited) == 4
+        return False
 
     def getSuccessors(self, state):
         """
@@ -316,6 +329,10 @@ class CornersProblem(search.SearchProblem):
         """
 
         successors = []
+        # 拿到当前坐标
+        x,y = state[0]
+        # 拿到访问过的角落位置list
+        visited = state[1]
         for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
             # Add a successor state to the successor list if the action is legal
             # Here's a code snippet for figuring out whether a new position hits a wall:
@@ -325,6 +342,22 @@ class CornersProblem(search.SearchProblem):
             #   hitsWall = self.walls[nextx][nexty]
 
             "*** YOUR CODE HERE ***"
+            dx, dy = Actions.directionToVector(action)
+            # 算出下一个坐标位置
+            nextx, nexty = int(x + dx), int(y + dy)
+            # 看是不是墙
+            hitsWall = self.walls[nextx][nexty]
+            # 如果下个位置不是墙
+            if not hitsWall:
+                next_position = (nextx, nexty)
+                visited_corners = list(visited)
+                # 如果下个位置是角落
+                if next_position in self.corners:
+                    # 如果这个角落还没被访问过
+                    if not next_position in visited_corners:
+                        visited_corners.append(next_position)
+                # 把3元组加入到successors list里
+                successors.append(((next_position, visited_corners), action, 1))
 
         self._expanded += 1 # DO NOT CHANGE
         return successors
@@ -360,7 +393,35 @@ def cornersHeuristic(state, problem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
     "*** YOUR CODE HERE ***"
-    return 0 # Default to trivial solution
+    # 拿到当前坐标
+    coordinates = state[0]
+    # 拿到访问过的角落位置list
+    visited = state[1]
+    # 用来存储没访问过的角落位置
+    not_visited = []
+    for corner in corners:
+        if corner not in visited:
+            not_visited.append(corner)
+
+    # 我们假设没有墙，找到去所有角落的最短曼哈顿距离
+    return smallest_distance_to_all_corners(coordinates, not_visited)
+
+
+def smallest_distance_to_all_corners(current_position, not_visited):
+    from math import inf
+    # 如果所有的角落已经被访问
+    if not not_visited:
+        return 0
+    else:
+        distance = inf
+        min_node = None
+        for corner in not_visited:
+            dis = util.manhattanDistance(current_position, corner)
+            if dis < distance:
+                distance = dis
+                min_node = corner
+        not_visited.remove(min_node)
+        return distance + smallest_distance_to_all_corners(min_node, not_visited)
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
