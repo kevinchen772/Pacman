@@ -525,7 +525,9 @@ def foodHeuristic(state, problem):
     # 储存最大长度
     max_dis = 0
     for food in foods:
+        # 用 position Search Problem
         problem = PositionSearchProblem(start_state, start=position, goal=food, warn=False, visualize=False)
+        # 拿到最大值
         max_dis = max(len(search.bfs(problem)), max_dis)
     return max_dis
 
@@ -558,6 +560,7 @@ class ClosestDotSearchAgent(SearchAgent):
         problem = AnyFoodSearchProblem(gameState)
 
         "*** YOUR CODE HERE ***"
+        # 用bfs解决
         return search.bfs(problem)
 
 class AnyFoodSearchProblem(PositionSearchProblem):
