@@ -513,9 +513,21 @@ def foodHeuristic(state, problem):
     Subsequent calls to this heuristic can access
     problem.heuristicInfo['wallCount']
     """
-    position, foodGrid = state
+    position, food_grid = state
     "*** YOUR CODE HERE ***"
-    return 0
+    foods = food_grid.asList()
+    start_state = problem.startingGameState
+
+    # 如果都吃完了
+    if not foods:
+        return 0
+
+    # 储存最大长度
+    max_dis = 0
+    for food in foods:
+        problem = PositionSearchProblem(start_state, start=position, goal=food, warn=False, visualize=False)
+        max_dis = max(len(search.bfs(problem)), max_dis)
+    return max_dis
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
@@ -546,7 +558,7 @@ class ClosestDotSearchAgent(SearchAgent):
         problem = AnyFoodSearchProblem(gameState)
 
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        return search.bfs(problem)
 
 class AnyFoodSearchProblem(PositionSearchProblem):
     """
@@ -580,7 +592,7 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         The state is Pacman's position. Fill this in with a goal test that will
         complete the problem definition.
         """
-        x,y = state
+        x, y = state
 
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        return (x, y) in self.food.asList()
