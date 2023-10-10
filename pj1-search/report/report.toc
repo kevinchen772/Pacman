@@ -1,0 +1,8 @@
+\contentsline {section}{\numberline {1}使用深度优先搜索找到固定的食物点}{1}{section.1}%
+\contentsline {section}{\numberline {2}广度优先搜索}{2}{section.2}%
+\contentsline {section}{\numberline {3}一致代价搜索}{2}{section.3}%
+\contentsline {section}{\numberline {4}A*搜索}{2}{section.4}%
+\contentsline {section}{\numberline {5}找到所有角落}{3}{section.5}%
+\contentsline {section}{\numberline {6}使用带启发式的A*策略找到所有角落}{3}{section.6}%
+\contentsline {section}{\numberline {7}吃掉所有的点}{4}{section.7}%
+\contentsline {section}{\numberline {8}次优搜索}{4}{section.8}%
