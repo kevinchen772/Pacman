@@ -404,24 +404,43 @@ def cornersHeuristic(state, problem):
             not_visited.append(corner)
 
     # 我们假设没有墙，找到去所有角落的最短曼哈顿距离
-    return smallest_distance_to_all_corners(coordinates, not_visited)
+    # return smallest_distance_to_all_corners(coordinates, not_visited)
+    # 我们假设没有墙，找到前往最近角落的曼哈顿距离
+    return distance_to_closest_corners(coordinates, not_visited)
 
-
-def smallest_distance_to_all_corners(current_position, not_visited):
+def distance_to_closest_corners(current_position, not_visited):
     from math import inf
     # 如果所有的角落已经被访问
     if not not_visited:
         return 0
     else:
         distance = inf
-        min_node = None
         for corner in not_visited:
             dis = util.manhattanDistance(current_position, corner)
             if dis < distance:
                 distance = dis
                 min_node = corner
-        not_visited.remove(min_node)
-        return distance + smallest_distance_to_all_corners(min_node, not_visited)
+        return distance
+
+
+
+
+
+# def smallest_distance_to_all_corners(current_position, not_visited):
+#     from math import inf
+#     # 如果所有的角落已经被访问
+#     if not not_visited:
+#         return 0
+#     else:
+#         distance = inf
+#         min_node = None
+#         for corner in not_visited:
+#             dis = util.manhattanDistance(current_position, corner)
+#             if dis < distance:
+#                 distance = dis
+#                 min_node = corner
+#         not_visited.remove(min_node)
+#         return distance + smallest_distance_to_all_corners(min_node, not_visited)
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
@@ -525,7 +544,9 @@ def foodHeuristic(state, problem):
     # 储存最大长度
     max_dis = 0
     for food in foods:
+        # 用 position Search Problem
         problem = PositionSearchProblem(start_state, start=position, goal=food, warn=False, visualize=False)
+        # 拿到最大值
         max_dis = max(len(search.bfs(problem)), max_dis)
     return max_dis
 
@@ -558,6 +579,7 @@ class ClosestDotSearchAgent(SearchAgent):
         problem = AnyFoodSearchProblem(gameState)
 
         "*** YOUR CODE HERE ***"
+        # 用bfs解决
         return search.bfs(problem)
 
 class AnyFoodSearchProblem(PositionSearchProblem):

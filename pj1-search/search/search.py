@@ -188,7 +188,7 @@ def uniformCostSearch(problem):
             return curr_path
 
         # 把当前state标记为已经访问
-        explored.append(curr_state)
+        # explored.append(curr_state)
 
         # 找到可以访问的邻居
         for nextState, action, cost in problem.getSuccessors(curr_state):
